@@ -72,6 +72,10 @@ class utilsTest(unittest.TestCase):
         split = "-"
         self.assertEqual(text.rsplit(split, 1), Utils.rsplit(text, split, 1))
 
+    def test_trim(self):
+        text = "  569 8965     6  "
+        self.assertEqual("56989656", Utils.trim(text))
+
 
 def main():
     suite = unittest.TestLoader().loadTestsFromTestCase(utilsTest)

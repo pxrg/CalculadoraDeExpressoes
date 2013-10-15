@@ -75,5 +75,11 @@ class Utils():
             values.insert(0, value)
         return values
                 
-            
+    @classmethod
+    def trim(self, expressao):
+        newExpression = ""
+        for i in expressao:
+            if i != " ":
+                newExpression += i
+        return newExpression
         

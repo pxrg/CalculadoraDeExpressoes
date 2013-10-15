@@ -5,21 +5,11 @@ from utils import *
 
 class Calc():
 
-    _caracteres_validos = "0123456789./*-+()"
-
     @classmethod
     def calcula(self, expressao):
-        aux = self.limpaEspacos(expressao)        
+        aux = Utils.trim(expressao)
         aux = self.eliminaParenteses(aux)
         return float(self.calculaExpressao(aux))
-
-    @classmethod
-    def limpaEspacos(self, string):
-        aux = ""
-        for e in string:
-            if e in Calc._caracteres_validos:
-                aux += e
-        return aux
 
     @classmethod
     def eliminaParenteses(self, expressao):
@@ -94,7 +84,7 @@ class Calc():
                 aux = self.calculaOperacao(aux, op)
         copiaAux = ''
         while(copiaAux != aux):
-            copiaAux = self.limpaEspacos(aux)
+            copiaAux = Utils.trim(aux)
             aux = self.eliminaSomaSubtracao(aux)
             
         return aux    

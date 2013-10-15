@@ -26,11 +26,6 @@ class calcTest(unittest.TestCase):
         resultado = Calc.calcula(conta)
         self.assertEqual(5*3, resultado)
 
-    def test_eliminarTodosEspacos(self):
-        conta = "132      +   5"
-        saida = "132+5"
-        self.assertEquals(len(saida), len(Calc.limpaEspacos(conta)))
-
     def test_calculoComParenteses(self):
         conta = "20-(10+5)+7"
         self.assertEquals("20-15+7", Calc.eliminaParenteses(conta))
