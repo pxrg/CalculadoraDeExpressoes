@@ -1,6 +1,8 @@
 #!usr/bin/env python
 #-*-coding:latin1-*-
 
+from utils import *
+
 class Calc():
 
     _caracteres_validos = "0123456789./*-+()"
@@ -22,25 +24,25 @@ class Calc():
     @classmethod
     def eliminaParenteses(self, expressao):
         aux = expressao
-        while(aux.find('(') != -1):
+        while(Utils.find(aux, '(') != -1):
             aux = self.calculaParenteses(aux)
         return aux
 
     @classmethod
     def calculaParenteses(self, expressao):
         aux = expressao
-        pos_inicial = aux.find('(')
+        pos_inicial = Utils.find(aux, '(')
         if pos_inicial != -1:   
-            pos_final = aux.find(')', pos_inicial)
+            pos_final = Utils.find(aux, ')', pos_inicial)
             valor_parenteses = aux[pos_inicial:pos_final+1]
             resultado = self.calculaExpressao(valor_parenteses[1:-1])
-            aux = aux.replace(valor_parenteses, '%s'%resultado)            
+            aux = Utils.replace(aux, valor_parenteses, '%s'%resultado)
         return aux
 
     @classmethod
     def calculaOperacao(self, expressao, operacao):
         aux = expressao
-        operador = aux.find(operacao)
+        operador = Utils.find(aux, operacao)
         inicio = False
         fim = False
         pos_ini = operador -1
@@ -57,7 +59,7 @@ class Calc():
             if inicio and fim:
                 valor = aux[pos_ini+1:pos_fim]
                 resultado = self.efetuaOperacao(valor)
-                aux = aux.replace(valor, '%d'%resultado)    
+                aux = Utils.replace(aux, valor, '%d'%resultado)    
                 break
         return aux
 
@@ -69,7 +71,7 @@ class Calc():
         for pos in xrange(len(expressao)):
             if pos == 0:
                 continue
-            if not aux[pos].isdigit():
+            if not Utils.is_digit(aux[pos]):
                 if not operador:
                     operador = True
                 else:
@@ -81,19 +83,18 @@ class Calc():
             if pos_fim >= (qtd -1) or pos_fim == -1:
                 valor = aux[::]         
             resultado = self.efetuaOperacao(valor)
-            aux = aux.replace(valor, '%d'%resultado)
+            aux = Utils.replace(aux, valor, '%d'%resultado)
         return aux
         
-
     @classmethod
     def calculaExpressao(self, expressao):
         aux = expressao
         for op in ('*', '/'):
-            while(aux.find(op) != -1):
+            while(Utils.find(aux, op) != -1):
                 aux = self.calculaOperacao(aux, op)
         copiaAux = ''
         while(copiaAux != aux):
-            copiaAux = aux.strip()
+            copiaAux = self.limpaEspacos(aux)
             aux = self.eliminaSomaSubtracao(aux)
             
         return aux    
@@ -102,17 +103,17 @@ class Calc():
     def efetuaOperacao(self, expressao):
         total = 0
         pos_padrao = 1
-        if expressao.find('*',1) >= pos_padrao:
-            val = expressao.split('*')
+        if Utils.find(expressao,'*',1) >= pos_padrao:
+            val = Utils.split(expressao, '*')
             total = float(val[0]) * float(val[1])
-        elif expressao.find('/',1) >= pos_padrao:
-            val = expressao.split('/')
+        elif Utils.find(expressao,'/',1) >= pos_padrao:
+            val = Utils.split(expressao, '/')
             total = float(val[0]) / float(val[1])
-        elif expressao.find('+',1) >= pos_padrao:
-            val = expressao.split('+')
+        elif Utils.find(expressao,'+',1) >= pos_padrao:
+            val = Utils.split(expressao, '+')
             total = float(val[0]) + float(val[1])
-        elif expressao.find('-',1) >= pos_padrao:
-            val = expressao.rsplit('-',1)
+        elif Utils.find(expressao,'-',1) >= pos_padrao:
+            val = Utils.rsplit(expressao, '-',1)
             total = float(val[0]) - float(val[1])        
         else:
             total = float(expressao)

@@ -59,6 +59,10 @@ class calcTest(unittest.TestCase):
         conta = "3+9-5*8+1+(10/2)-100"
         self.assertEquals((3+9-5*8+1+(10/2)-100), Calc.calcula(conta))
 
+    def test_expressaoValidacaoFinal(self):
+        expressao = "1+(3*2+3-1+3)+5*2*(10+5)"
+        self.assertEquals((1+(3*2+3-1+3)+5*2*(10+5)), Calc.calcula(expressao))
+
 
 def main():
     suite = unittest.TestLoader().loadTestsFromTestCase(calcTest)
