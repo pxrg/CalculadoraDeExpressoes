@@ -34,6 +34,10 @@ class analiseTest(unittest.TestCase):
         expressao = "2+5-9/8*2+(8-2)+(6)"
         self.assertEqual(True, Analise.sintatica(expressao))
 
+    def test_sintaticaValidoSimples(self):
+        expressao = "2+5"
+        self.assertEqual(True, Analise.sintatica(expressao))
+
     def test_sintaticaParentesesNaoAberto(self):
         expressao = "9*63)"
         self.assertRaises(SintaticaError, Analise.sintatica, expressao)

@@ -31,7 +31,7 @@ class Analise():
         for i in xrange(len(expressao)):
             if Utils.find(self._operadores_validos, expressao[i]) != -1 and Utils.find(self._operadores_validos, expressao[i+1]) != -1:
                 raise SintaticaError("Sequência de operadores não aceito : col %d" % i)
-            if Utils.is_digit(expressao[i]) and expressao[i+1] == '(':
+            if (i+1) < len(expressao) and Utils.is_digit(expressao[i]) and expressao[i+1] == '(':
                 raise SintaticaError("Numéro seguido de parenteses não é permitido : col %d" % i)
             if expressao[i] == '(':
                 open_parentheses += 1
