@@ -56,25 +56,11 @@ class Calc():
     @classmethod
     def eliminaSomaSubtracao(self, expressao):
         aux = expressao
-        pos_fim = -1
-        operador = False
-        for pos in xrange(len(expressao)):
-            if pos == 0:
-                continue
-            if not Utils.is_digit(aux[pos]):
-                if not operador:
-                    operador = True
-                else:
-                    pos_fim = pos
-                    break
-        if operador:
-            valor = aux[0:pos_fim]
-            qtd = len(aux)
-            if pos_fim >= (qtd -1) or pos_fim == -1:
-                valor = aux[::]         
-            resultado = self.efetuaOperacao(valor)
-            aux = Utils.replace(aux, valor, '%d'%resultado)
-        return aux
+        valores = Utils.split(expressao, '+')
+        total = 0
+        for val in valores:
+            total += self.efetuaOperacao(val)
+        return '%d'%total
         
     @classmethod
     def calculaExpressao(self, expressao):

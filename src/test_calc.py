@@ -46,10 +46,6 @@ class calcTest(unittest.TestCase):
         conta = "3+9-5*8+1"
         self.assertEquals((3+9-5*8+1), Calc.calcula(conta))
 
-    def test_eliminarSomaSubtracao(self):
-        conta = "3+9-5*8+1"
-        self.assertEquals("12-5*8+1", Calc.eliminaSomaSubtracao(conta))
-
     def test_efetuarCalculoERetornarResultadoFinalComParenteses(self):
         conta = "3+9-5*8+1+(10/2)-100"
         self.assertEquals((3+9-5*8+1+(10/2)-100), Calc.calcula(conta))
@@ -57,6 +53,10 @@ class calcTest(unittest.TestCase):
     def test_expressaoValidacaoFinal(self):
         expressao = "1+(3*2+3-1+3)+5*2*(10+5)"
         self.assertEquals((1+(3*2+3-1+3)+5*2*(10+5)), Calc.calcula(expressao))
+
+    def test_calculoSimples(self):
+        expressao = "6+(-4+2)"
+        self.assertEquals((6+(-4+2)), Calc.calcula(expressao))
 
 
 def main():
