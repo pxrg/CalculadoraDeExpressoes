@@ -1,5 +1,5 @@
 #!usr/bin/env python
-#-*-coding:latin1-*-
+#-*-coding:utf-8-*-
 
 import unittest
 from analise import *
@@ -33,6 +33,10 @@ class analiseTest(unittest.TestCase):
     def test_sintaticaValido(self):
         expressao = "2+5-9/8*2+(8-2)+(6)"
         self.assertEqual(True, Analise.sintatica(expressao))
+
+    def test_sintaticaParentesesNaoAberto(self):
+        expressao = "9*63)"
+        self.assertRaises(SintaticaError, Analise.sintatica, expressao)
     
 def main():
     suite = unittest.TestLoader().loadTestsFromTestCase(analiseTest)
