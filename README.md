@@ -9,4 +9,5 @@ TODO's
 - [ ] Gerar Executável
 
 Linguagem utilizado Python + PyGtk
+
 Download PyGtk Windows: https://www.dropbox.com/sh/e52txf0owotzv6b/eJYV0CUFqJ/pygtk-all-in-one-2.24.0.win32-py2.7.msi
