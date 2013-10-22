@@ -46,7 +46,6 @@ class Analise():
 
         if open_parentheses != close_parentheses:
             raise SintaticaError("Existe parênteses não fechado. : col %s" %(pos))
-
         return True
             
 

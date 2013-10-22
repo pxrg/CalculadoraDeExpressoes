@@ -1,62 +1,131 @@
 #!usr/bin/env python
 #-*-coding:latin1-*-
 
-class Gramatica(object):
+class Analise(object):
 
+    _tokens = []
+    _alfabeto = '0123456789*/+-()'
     _operadores = '*/+-'
+    _status = '+-'
+    _estado = 0
 
-    @classmethod
-    def calcular(self, expressao):
-        tokens = self.gerarTokens(expressao)
-        exp = ''
-        if tokens.count('*') > 0:
-            pos = tokens.index('*')
-            resultado = int(tokens[pos-1]) * int(tokens[pos+1])
-            print resultado
-            expressao = expressao.replace((tokens[pos-1] + '*' + tokens[pos+1]), resultado)
-        return expressao
-            
-    @classmethod
-    def gerarTokens(self, expressao):
-        lista = []
-        token = ''
-        i = -1
-        while (i < len(expressao) -1):
-            i += 1
-            if i == 0 and (expressao[i] == '-' or expressao[i] == '+'):
-                token += expressao[i]
-            else:
-                if Gramatica.operador(expressao[i]) or expressao[i] == '(' or expressao[i] == ')':
-                    if token != '': lista.append(token)
-                    token = ''
-                    lista.append(expressao[i])
-                else:
-                    token += expressao[i]
+    def lexica(self, expressao):
+        lexema = ''
+        for count in xrange(0, len(expressao)):
+            i = expressao[count]
+            if self._estado == 0:
+                if self.validar_alfabeto(i, 'Caracter inválido no estado 0'): # verificar caracter valido
+                    if i.isdigit():
+                        lexema += i
+                        self._estado = 1
+                    elif self._status.find(i) != -1:
+                        lexema += i
+                        self._estado = 3
+                    elif i == '(':
+                        lexema += i
+                        self._estado = 4
+                    else:
+                        raise Exception('Esse caracter não tem próximo estado.')
+            elif self._estado == 1:
+                if self.validar_alfabeto(i, 'Caracter inválido no estado 1'): # verificar caracter valido
+                    if i.isdigit():
+                        lexema += i
+                        self.final(count, len(expressao) - 1, 1, lexema) # verifica estado final
+                    elif self._operadores.find(i) != -1:
+                        self._tokens.append(lexema)
+                        lexema = ''
+                        self._tokens.append(i)
+                        self._estado = 2
+                    else:
+                        raise Exception('Esse caracter não tem próximo estado.')
+            elif self._estado == 2:
+                if self.validar_alfabeto(i, 'Caracter inválido no estado 2'): # verificar caracter valido
+                    if i.isdigit():
+                        lexema += i
+                        self.final(count, len(expressao) - 1, 1, lexema) # verifica estado final
+                    elif i == '(':
+                        self._tokens.append(i)
+                        self._estado = 4
+                    else:
+                        raise Exception('Esse caracter não tem próximo estado.')
+            elif self._estado == 3:
+                if self.validar_alfabeto(i, 'Caracter inválido no estado 3'): # verificar caracter valido
+                    if i.isdigit():
+                        lexema += i
+                        self.final(count, len(expressao) - 1, 1, lexema) # verifica estado final
+                    else:
+                        raise Exception('Esse caracter não tem próximo estado.')
+            elif self._estado == 4:
+                if self.validar_alfabeto(i, 'Caracter inválido no estado 4'): # verificar caracter valido
+                    if i.isdigit():
+                        lexema += i
+                        self._estado = 5
+                    elif self._status.find(i) != -1:
+                        lexema += i
+                        self._estado = 7
+                    else:
+                        raise Exception('Esse caracter não tem próximo estado.')
+            elif self._estado == 5:
+                if self.validar_alfabeto(i, 'Caracter inválido no estado 5'): # verificar caracter valido
+                    if i.isdigit():
+                        lexema += i
+                        self._estado = 5
+                    elif self._operadores.find(i) != -1:
+                        self._tokens.append(lexema)
+                        lexema = ''
+                        self._tokens.append(i)
+                        self._estado = 4
+                    elif i == ')':
+                        self._tokens.append(lexema) # adicionado lexema antes, pois se trata de parenteses
+                        lexema = '' # esvazia lexema, para não ser adicionada no estado final
+                        self.final(count, len(expressao) - 1, 6, lexema) # verifica estado final
+                        self._tokens.append(i)
+                    else:
+                        raise Exception('Esse caracter não tem próximo estado.')
+            elif self._estado == 6:
+                if self.validar_alfabeto(i, 'Caracter inválido no estado 6'): # verificar caracter valido
+                    if self._operadores.find(i) != -1:
+                        self._tokens.append(i)
+                        self._estado = 2
+                    else:
+                        raise Exception('Esse caracter não tem próximo estado.')
+            elif self._estado == 7:
+                if self.validar_alfabeto(i, 'Caracter inválido no estado 7'): # verificar caracter valido
+                    if i.isdigit():
+                        lexema += i
+                        self._estado = 5
+                    else:
+                        raise Exception('Esse caracter não tem próximo estado.')
                     
-        if token != '': lista.append(token)
-        return lista
+    def validar_alfabeto(self, char, msg):
+        if self._alfabeto.find(char) != -1:
+            return True
+        else:
+            raise Exception(msg)
 
-    @classmethod
-    def operador(self, caracter):
-        for i in self._operadores:
-            if caracter == i:
-                return True
-        return False
+    def final(self, count, condicao, estado, lexema):
+        if count == condicao:
+            if lexema != '':
+                self._tokens.append(lexema)
+        else:
+            self._estado = estado
+   
+    def get_tokens(self):
+        return self._tokens
+                
 
-    @classmethod
-    def numero(self, expressao):
-        indice = 0
-        if expressao[indice] == '-' or expressao[indice] == '+':
-            indice = 1
 
-        for i in xrange(indice, len(expressao)):
-            if not (expressao[i] >= '0' and expressao[i] <= '9'):
-                return False
-        return True
+class Token(object):
+
+    def __init__(self, lexema, token):
+        self.token = token
+        self.lexema = lexema
 
 def main():
-    expressao = '3+45*2-7'
-    print Gramatica.calcular(expressao)
+    expressao = '-3*3+(+3-5)/3'
+    analise = Analise()
+    analise.lexica(expressao)
+    print analise.get_tokens()
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
